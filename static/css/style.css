@@ -1,0 +1,44 @@
+
+*{
+    margin: 0px;
+}
+
+
+#panel{
+    border: 2px solid black;
+}
+
+#panel{
+    width: 80%;
+    height: auto;
+    margin: auto;
+    background-image: url('/static/images/book_bg.jpg');
+    background-size: cover;
+    background-color: rgba(255, 255, 255, 0.647);
+    background-blend-mode: overlay;
+    
+}
+
+#input_form{
+    border: 1px solid rgb(13, 13, 18);
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 500px;
+    width: 500px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(23, 111, 67, 0.342);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.675);
+}
+
+#center{
+    text-align: center;
+    color: rgb(45, 45, 45);
+}
+
+#heading{
+    text-align: center;
+    color: rgb(0, 0, 255);
+}
+
