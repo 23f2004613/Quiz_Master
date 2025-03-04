@@ -13,18 +13,19 @@
         <div id="panel">
             <h3 id="center">Login here</h3>
             <div id="input_form">
-                <form>
+                <form action="/login" method="POST">
                     <div class="mb-3">
                       <label for="email" class="form-label">Email address</label>
-                      <input type="email" class="form-control" id="email" placeholder="iitm@ds.study.iitm.ac.in">
+                      <input type="email" class="form-control" id="email" name="email" placeholder="iitm@ds.study.iitm.ac.in">
                     </div>
                     <div class="mb-3">
                       <label for="pwd" class="form-label">Password</label>
-                      <input type="password" class="form-control" id="pwd" placeholder="set a strong password">
+                      <input type="password" class="form-control" id="pwd" name="pwd" placeholder="set a strong password">
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary">Submit</button>
-                        New user?<a href="signup.html">signup here</a>
+                        New user?<a href="/signup">signup here</a>
+                        <div style="color: red;">{{msg}}</div>
                     </div>
                   </form>
             </div>

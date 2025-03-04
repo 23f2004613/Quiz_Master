@@ -11,32 +11,33 @@
     <div id="container">
         <h1 id="heading">Quiz Master</h1>
         <div id="panel">
-            <h3 id="center">Login here</h3>
+            <h3 id="center">Register here</h3>
             <div id="input_form">
-                <form>
+                <form action="/signup" method="POST">
                     <div class="mb-3">
                       <label for="email" class="form-label">Email address</label>
-                      <input type="email" class="form-control" id="email" placeholder="iitm@ds.study.iitm.ac.in">
+                      <input type="email" class="form-control" id="email" name="email" placeholder="iitm@ds.study.iitm.ac.in">
                     </div>
                     <div class="mb-3">
                       <label for="pwd" class="form-label">Password</label>
-                      <input type="password" class="form-control" id="pwd" placeholder="set a strong password">
+                      <input type="password" class="form-control" id="pwd" name="pwd" placeholder="set a strong password">
                     </div>
                     <div class="mb-3">
                       <label for="fullname" class="form-label">Full name</label>
-                      <input type="text" class="form-control" id="fullname">
+                      <input type="text" class="form-control" id="fullname" name="fullname">
                     </div>
                     <div class="mb-3">
                       <label for="quali" class="form-label">Qualification</label>
-                      <input type="text" class="form-control" id="quali">
+                      <input type="text" class="form-control" id="quali" name="qual">
                     </div>
                     <div class="mb-3">
                       <label for="dob" class="form-label">DOB</label>
-                      <input type="date" class="form-control" id="dob">
+                      <input type="date" class="form-control" id="dob" name="dob">
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary">Submit</button>
-                        Already have an account?<a href="login.html">Login here</a>
+                        Already have an account?<a href="/login">Login here</a>
+                        <div style="color: red;">{{msg}}</div>
                     </div>
                   </form>
             </div>

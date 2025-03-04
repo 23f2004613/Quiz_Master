@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>edit chapter</title>
+</head>
+<body>
+    <div id="container">
+        <h1 id="heading">Quiz Master</h1>
+        <div id="panel">
+            <!-- nav var started here -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                      <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="#">Quiz</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="#">Summary</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="/login">Logout</a>
+                      </li>
+                    </ul>
+                    <form class="d-flex">
+                      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                      <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                  </div>
+                  <span class="ms-3">Welcome {{name}}</span>
+                </div>
+              </nav>
+              <!-- nav bar ends here -->
+              <h3 id="center">Add Chapter</h3>
+              <div id="input_form">
+                <form action="#" method="POST">
+                    <div class="mb-3">
+                        <label for="s_id" class="form-label">Subject ID</label>
+                        <input type="number" class="form-control" id="s_id" name="s_id" value="{{subject_id}}"  readonly>
+                      </div>
+                    <div class="mb-3">
+                      <label for="name" class="form-label">Name</label>
+                      <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="mb-3">
+                      <label for="description" class="form-label">Description</label>
+                      <input type="text" class="form-control" id="description" name="description">
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <a href="/admin/{{name}}" type="button" class="btn btn-success"> cancel</a>
+                        {{msg}}
+                    </div>
+                  </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

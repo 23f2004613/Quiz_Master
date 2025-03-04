@@ -10,7 +10,7 @@
 
 #panel{
     width: 80%;
-    height: auto;
+    min-height: 580px;
     margin: auto;
     background-image: url('/static/images/book_bg.jpg');
     background-size: cover;
@@ -42,3 +42,19 @@
     color: rgb(0, 0, 255);
 }
 
+#shadow{
+    background-color: rgba(23, 111, 67, 0.342);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.675);
+}
+
+
+#quizpanel{
+    border: 1px solid black;
+    min-height: 400px;
+    width: 800px;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: rgba(23, 111, 67, 0.342);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.675);
+}

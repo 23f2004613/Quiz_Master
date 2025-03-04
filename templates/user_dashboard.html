@@ -11,7 +11,7 @@
     <div id="container">
         <h1 id="heading">Quiz Master</h1>
         <div id="panel">
-            <h3 id="center">Admin Dashboard</h3>
+            <h3 id="center">User Dashboard</h3>
             <!-- nav var started here -->
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
@@ -27,7 +27,7 @@
                         <a class="nav-link active" href="#">Summary</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link active" href="#">Logout</a>
+                        <a class="nav-link active" href="/login">Logout</a>
                       </li>
                     </ul>
                     <form class="d-flex">
@@ -35,11 +35,49 @@
                       <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                   </div>
-                  <span class="ms-3">Welcome Admin</span>
+                  <span class="ms-3">Welcome {{name}}</span>
                 </div>
               </nav>
               <!-- nav bar ends here -->
-               
+               <div id="quizpanel">
+                <h2 id="center">Upcoming Quizes</h2>
+                <!-- table started here -->
+                <table class="table">
+                    <thead>
+                      <tr class="table-dark">
+                        <th scope="col">ID</th>
+                        <th scope="col">No. of questionst</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Duration</th>
+                        <th scope="col">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td><a href="#" type="button" class="btn btn-primary" >View</a> | <a href="#" type="button" class="btn btn-success">Start</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                        <td><a href="#" type="button" class="btn btn-primary" >View</a> | <a href="#" type="button" class="btn btn-success">Start</a></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                        <td><a href="#" type="button" class="btn btn-primary" >View</a> | <a href="#" type="button" class="btn btn-success">Start</a></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <!-- table ends here -->
+               </div>
         </div>
     </div>
 </body>

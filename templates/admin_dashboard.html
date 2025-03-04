@@ -27,7 +27,7 @@
                         <a class="nav-link active" href="#">Summary</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link active" href="#">Logout</a>
+                        <a class="nav-link active" href="/login">Logout</a>
                       </li>
                     </ul>
                     <form class="d-flex">
@@ -35,70 +35,57 @@
                       <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                   </div>
-                  <span class="ms-3">Welcome Admin</span>
+                  <span class="ms-3">Welcome {{name}}</span>
                 </div>
               </nav>
               <!-- nav bar ends here -->
                <!-- grid system starts here -->
               <div class="container" style="margin-top: 10px;margin-bottom: 10px;">
+                {%if subjects%}
                 <div class="row">
+                  {%for subject in subjects%}
                 <!-- card 1  starts here -->
-                  <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                          <h5 class="card-title">Card title</h5>
-                          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                          <a href="#" class="card-link">Card link</a>
-                          <a href="#" class="card-link">Another link</a>
+                  <div class="col" style="margin-top: 20px;">
+                    <div id="shadow" class="card" style="width: 500px;">
+                        <div class="card-body" >
+                          <h5 id="center" class="card-title">{{subject.name}}</h5>
+                          {%if subject.chapters%}
+                          <table class="table">
+                            <thead>
+                              <tr class="table-dark">
+                                <th scope="col">Chapter Name</th>
+                                <th scope="col">No. of questionst</th>
+                                <th scope="col">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {%for chapter in subject.chapters%}
+                              <tr>
+                                <td>{{chapter.name}}</td>
+                                <td>xxxxxxx</td>
+                                <td><a href="#" type="button" class="btn btn-primary" >Edit</a> | <a href="#" type="button" class="btn btn-danger">Delete</a></td>
+                              </tr>
+                              {%endfor%}
+                            </tbody>
+                          </table>
+                          {%else%}
+                          <h3 id="center">No chapters available</h3>
+                          {%endif%}
+                          <a href="/chapter/{{subject.id}}/{{name}}" type="button" class="btn btn-outline-primary" style="display: flex;justify-content: center;">Add Chapter</a>
+                          <!-- table ends here -->
                         </div>
                       </div>
                   </div>
-                  <!-- card 1 ends here -->
-                <!-- card 1  starts here -->
-                  <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                          <h5 class="card-title">Card title</h5>
-                          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                          <a href="#" class="card-link">Card link</a>
-                          <a href="#" class="card-link">Another link</a>
-                        </div>
-                      </div>
-                  </div>
-                  <!-- card 1 ends here -->
-                <!-- card 1  starts here -->
-                  <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                          <h5 class="card-title">Card title</h5>
-                          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                          <a href="#" class="card-link">Card link</a>
-                          <a href="#" class="card-link">Another link</a>
-                        </div>
-                      </div>
-                  </div>
-                  <!-- card 1 ends here -->
-                <!-- card 1  starts here -->
-                  <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                          <h5 class="card-title">Card title</h5>
-                          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                          <a href="#" class="card-link">Card link</a>
-                          <a href="#" class="card-link">Another link</a>
-                        </div>
-                      </div>
-                  </div>
+                  {%endfor%}
                   <!-- card 1 ends here -->
                 </div>
+                {%else%}
+                <h3 id="center">No subjects are available!</h3>
+                {%endif%}
               </div>
               <!-- grid system ends here -->
-              <div class="mb-3" style="display: flex;justify-content: center;">
-                <button type="button" class="btn btn-primary">Add subject</button>
+              <div class="mb-3" style="display: flex;justify-content: center;margin-top: 50px;">
+                <a href="/subject/{{name}}" type="button" class="btn btn-primary">Add subject</a>
             </div>
         </div>
     </div>
