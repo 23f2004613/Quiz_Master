@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>admin dashboard</title>
+</head>
+<body>
+    <div id="container">
+        <h1 id="heading">Quiz Master</h1>
+        <div id="panel">
+            <h3 id="center">Admin Dashboard</h3>
+            <!-- nav var started here -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                      <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="/quiz_dashboard/{{name}}">Quizs</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="#">Summary</a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link active" href="/login">Logout</a>
+                      </li>
+                    </ul>
+                    <form class="d-flex" method="POST" action="/search/{{name}}">
+                      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_txt" id="search_txt">
+                      <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>   
+                  </div>
+                  <span class="ms-3">Welcome {{name}}</span>
+                </div>
+              </nav>
+              <!-- nav bar ends here -->
+               <!-- grid system starts here -->
+              <div class="container" style="margin-top: 10px;margin-bottom: 10px;">
+                {%if subjects%}
+                <div class="row">
+                  {%for subject in subjects%}
+                <!-- card 1  starts here -->
+                  <div class="col" style="margin-top: 20px;">
+                    <div id="shadow" class="card" style="width: 500px;">
+                        <div class="card-body" >
+                          <h5 id="center" class="card-title">{{subject.name}}</h5>
+                          {%if subject.chapters%}
+                          <table class="table">
+                            <thead>
+                              <tr class="table-dark">
+                                <th scope="col">Chapter Name</th>
+                                <th scope="col">No. of questionst</th>
+                                <th scope="col">Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {%for chapter in subject.chapters%}
+                              <tr>
+                                <td>{{chapter.name}}</td>
+                                <td>xxxxxxx</td>
+                                <td><a href="/edit_chapter/{{chapter.id}}/{{name}}" type="button" class="btn btn-primary" >Edit</a> | <a href="/add_quiz/{{chapter.id}}/{{name}}" type="button" class="btn btn-secondary">Add Quiz</a></td>
+                              </tr>
+                              {%endfor%}
+                            </tbody>
+                          </table>
+                          {%else%}
+                          <h3 id="center">No chapters available</h3>
+                          {%endif%}
+                          <div id="center">
+                          <a href="/add_chapter/{{subject.id}}/{{name}}" type="button" class="btn btn-primary">Add Chapter</a>
+                          <a href="/edit_subject/{{subject.id}}/{{name}}" type="button" class="btn btn-secondary">Edit Subject</a>
+                        </div>
+                          <!-- table ends here -->
+                        </div>
+                      </div>
+                  </div>
+                  {%endfor%}
+                  <!-- card 1 ends here -->
+                </div>
+                {%else%}
+                <h3 id="center">No subjects are available!</h3>
+                {%endif%}
+              </div>
+              <!-- grid system ends here -->
+              <div class="mb-3" style="display: flex;justify-content: center;margin-top: 50px;">
+                <a href="/add_subject/{{name}}" type="button" class="btn btn-primary">Add subject</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
