@@ -63,7 +63,7 @@
                               <tr>
                                 <td>{{question.id}}</td>
                                 <td>{{question.question_statement}}</td>
-                                <td><a href="#" type="button" class="btn btn-primary" >Edit</a> | <a href="#" type="button" class="btn btn-danger">delete</a></td>
+                                <td><a href="" type="button" class="btn btn-primary" >Edit</a> | <a href="#" type="button" class="btn btn-danger">delete</a></td>
                               </tr>
                               {%endfor%}
                             </tbody>
@@ -73,7 +73,7 @@
                           {%endif%}
                           <div id="center">
                             <a href="#" type="button" class="btn btn-primary">Add question</a>
-                            <a href="/edit_quiz/{{chap_id}}/{{name}}" type="button" class="btn btn-secondary">Edit quiz</a>
+                            <a href="/edit_quiz/{{quiz.id}}/{{name}}" type="button" class="btn btn-secondary">Edit quiz</a>
                           </div>
                           <!-- table ends here -->
                         </div>
@@ -87,9 +87,9 @@
                 {%endif%}
               </div>
               <!-- grid system ends here -->
-              <div class="mb-3" style="display: flex;justify-content: center;margin-top: 50px;">
+              <!-- <div class="mb-3" style="display: flex;justify-content: center;margin-top: 50px;">
                 <a href="/subject/{{name}}" type="button" class="btn btn-primary">Add quiz</a>
-            </div>
+            </div> -->
         </div>
     </div>
 </body>

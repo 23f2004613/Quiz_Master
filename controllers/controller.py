@@ -25,7 +25,7 @@ def user_dashboard(name):
 @app.route('/quiz_dashboard/<name>')
 def quiz_dashboard(name):
     quizs = get_quizs()
-    return  render_template("quiz_dashboard.html",name=name,quizs=quizs)
+    return render_template("quiz_dashboard.html",quizs=quizs,name=name)
 
 # #################################################### login ########################################################
 
@@ -186,7 +186,38 @@ def add_quiz(id,name):
     return render_template("add_quiz.html",name=name,chapter=chap)
 
 
-##################################         search #################################################
+###########################################    edit quiz #############################################
+
+
+@app.route("/edit_quiz/<id>/<name>",methods=["GET","POST"])
+def edit_quiz(id,name):
+    today = datetime.today().date()
+    quiz = get_quiz(id)
+    if request.method=="POST":
+        mod_date_of_quiz = request.form.get("date_of_quiz")
+        mod_time_duration = request.form.get("time_duration")
+        mod_remarks = request.form.get("remarks")
+        if not mod_date_of_quiz or not mod_time_duration :
+            return render_template("edit_quiz.html",quiz=quiz,name=name,msg="Fill all inputs")
+        year, month, day = map(int, mod_date_of_quiz.split('-'))
+        date_obj = date(year, month, day)
+        time_parts = list(map(int, mod_time_duration.split(':')))
+        hour, minute = time_parts[:2] 
+        time_obj = time(hour, minute)
+        if date_obj <= today:
+            return render_template("edit_quiz.html",name=name,quiz=quiz,msg="increase date")
+        quiz.date_of_quiz=date_obj
+        quiz.time_duration=time_obj
+        quiz.remarks=mod_remarks
+        db.session.commit()
+        return redirect(url_for("quiz_dashboard",name=name))
+    return render_template("edit_quiz.html",quiz=quiz,name=name)
+
+############################## ########## add question ############################################
+# @app.route("/add_question/")
+
+
+#############################################    search #################################################
 
 @app.route("/search/<name>", methods=['GET','POST'])
 def search(name):
@@ -229,3 +260,8 @@ def  get_subject(id):
 def  get_chapter(id):
     chapter = Chapter.query.filter_by(id=id).first() 
     return chapter
+
+
+def  get_quiz(id):
+    quiz = Quiz.query.filter_by(id=id).first() 
+    return quiz
