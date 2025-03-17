@@ -24,8 +24,8 @@ def user_dashboard(name):
 
 @app.route('/quiz_dashboard/<name>')
 def quiz_dashboard(name):
-    quizs = get_quizs()
-    return render_template("quiz_dashboard.html",quizs=quizs,name=name)
+    quizzes = Quiz.query.join(Chapter).add_columns(Quiz.id,Chapter.name.label('chapter_name')).all()
+    return render_template("quiz_dashboard.html",quizs=quizzes,name=name)
 
 # #################################################### login ########################################################
 
@@ -213,6 +213,19 @@ def edit_quiz(id,name):
         return redirect(url_for("quiz_dashboard",name=name))
     return render_template("edit_quiz.html",quiz=quiz,name=name)
 
+
+###############################################   delete quiz @@#################################################
+
+
+@app.route("/delete_quiz/<id>/<name>")
+def delete_quiz(id,name):
+    quiz=get_quiz(id)
+    db.session.delete(quiz)
+    db.session.commit()
+    return redirect(url_for("quiz_dashboard",name=name))
+
+
+
 ############################## ########## add question ############################################
 # @app.route("/add_question/")
 
@@ -265,3 +278,4 @@ def  get_chapter(id):
 def  get_quiz(id):
     quiz = Quiz.query.filter_by(id=id).first() 
     return quiz
+
