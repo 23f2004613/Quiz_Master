@@ -39,41 +39,37 @@
                 </div>
               </nav>
               <!-- nav bar ends here -->
-              <h3 id="center">Add question</h3>
+              <h3 id="center">Edit question </h3>
               <div id="input_form" style="height: auto;">
-                <form action="/add_question/{{quiz.id}}/{{name}}" method="POST">
-                    <div class="mb-3">
-                        <label for="chapter_id" class="form-label">Chapter ID</label>
-                        <input type="number" class="form-control" id="chapter_id" name="chapter_id" value="{{quiz.Chapter_id}}" readonly>
-                    </div>
+                <form action="/edit_question/{{question.id}}/{{name}}" method="POST">
                     <div class="mb-3">
                         <label for="question_title" class="form-label">Question Title</label>
-                        <input type="text" class="form-control" id="question_title" name="question_title">
+                        <input type="text" class="form-control" id="question_title" name="question_title" value="{{question.question_title}}">
                     </div>
                     <div class="mb-3">
                         <label for="question_statement" class="form-label">Question Statement</label>
-                        <textarea class="form-control" id="question_statement" name="question_statement" rows="2"></textarea>
+                        <textarea class="form-control" id="question_statement" name="question_statement"   rows="2">{{question.question_statement}}</textarea>
                     </div>
                     <h4 id="center">Single Option Correct</h4>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="option1" class="form-label me-2">Option 1:</label>
-                        <input type="text" class="form-control w-50"  id="option1" name="option1" >
+                        <input type="text" class="form-control w-50"  id="option1" name="option1" value="{{question.option1}}" >
                     </div>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="option2" class="form-label me-2">Option 2:</label>
-                        <input type="text" class="form-control w-50"  id="option2" name="option2" >
+                        <input type="text" class="form-control w-50"  id="option2" name="option2" value="{{question.option2}}" >
                     </div>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="option3" class="form-label me-2">Option 3:</label>
-                        <input type="text" class="form-control w-50"  id="option3" name="option3" >
+                        <input type="text" class="form-control w-50"  id="option3" name="option3" value="{{question.option3}}" >
                     </div>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="option4" class="form-label me-2">Option 4:</label>
-                        <input type="text" id="option4" name="option4" class="form-control w-50" >
+                        <input type="text" id="option4" name="option4" class="form-control w-50" value="{{question.option4}}" >
                     </div>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="correct_option" class="form-label me-2">Correct Option:</label>
-                        <input type="number"  name="correct_option"  id="correct_option" class="form-control w-25" min="1" max="4" >
+                        <input type="number"  name="correct_option"  id="correct_option" class="form-control w-25" min="1" max="4" value="{{question.correct_option}}" >
                     </div>
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary">Submit</button>

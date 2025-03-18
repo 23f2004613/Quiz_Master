@@ -51,6 +51,7 @@ class Score(db.Model):
 class Question(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     quiz_id = db.Column(db.Integer,db.ForeignKey("quiz.id"),nullable=False)
+    question_title = db.Column(db.String,nullable=False)
     question_statement = db.Column(db.String,nullable=False)
     option1 = db.Column(db.String,nullable=False)
     option2 = db.Column(db.String,nullable=False)

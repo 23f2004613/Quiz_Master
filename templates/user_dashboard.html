@@ -42,6 +42,7 @@
                <div id="quizpanel">
                 <h2 id="center">Upcoming Quizes</h2>
                 <!-- table started here -->
+                 {%if quizs%}
                 <table class="table">
                     <thead>
                       <tr class="table-dark">
@@ -53,29 +54,20 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {% for quiz in quizs %}
                       <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td><a href="#" type="button" class="btn btn-primary" >View</a> | <a href="#" type="button" class="btn btn-success">Start</a></td>
+                        <th scope="row">{{quiz.id}}</th>
+                        <td>{{quiz.questions | length}}</td>
+                        <td>{{quiz.date_of_quiz}}</td>
+                        <td>{{quiz.time_duration}}</td>
+                        <td><a href="/view_quiz/{{quiz.id}}/{{name}}" type="button" class="btn btn-primary" >View</a> | <a href="#" type="button" class="btn btn-success">Start</a></td>
                       </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td><a href="#" type="button" class="btn btn-primary" >View</a> | <a href="#" type="button" class="btn btn-success">Start</a></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                        <td><a href="#" type="button" class="btn btn-primary" >View</a> | <a href="#" type="button" class="btn btn-success">Start</a></td>
-                      </tr>
+                      {% endfor %}
                     </tbody>
                   </table>
+                  {% else %}
+                  <div id="centre">No Quizes avilable</div>
+                  {% endif %}
                   <!-- table ends here -->
                </div>
         </div>

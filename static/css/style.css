@@ -24,7 +24,7 @@
     margin: auto;
     margin-top: 20px;
     margin-bottom: 20px;
-    height: 500px;
+    min-height: 500px;
     width: 500px;
     padding: 10px;
     border-radius: 10px;
@@ -51,7 +51,7 @@
 #quizpanel{
     border: 1px solid black;
     min-height: 400px;
-    width: 800px;
+    width: 600px;
     margin: auto;
     margin-top: 20px;
     margin-bottom: 20px;

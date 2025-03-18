@@ -19,12 +19,14 @@ def admin_dashboard(name):
 
 @app.route('/user/<name>')
 def user_dashboard(name):
-    return render_template("user_dashboard.html",name=name)
+    quizzes = get_quizs()
+    return render_template("user_dashboard.html",quizs=quizzes,name=name)
 
 
 @app.route('/quiz_dashboard/<name>')
 def quiz_dashboard(name):
-    quizzes = Quiz.query.join(Chapter).add_columns(Quiz.id,Chapter.name.label('chapter_name')).all()
+    # quizz=Quiz.query.join(Chapter).add_columns(Quiz.id, Chapter.id.label('chapter_id'), Chapter.name.label('chapter_name')).all()
+    quizzes = get_quizs()
     return render_template("quiz_dashboard.html",quizs=quizzes,name=name)
 
 # #################################################### login ########################################################
@@ -227,8 +229,69 @@ def delete_quiz(id,name):
 
 
 ############################## ########## add question ############################################
-# @app.route("/add_question/")
+@app.route("/add_question/<id>/<name>",methods=["GET","POST"])
+def add_questions(id,name):
+    quiz = get_quiz(id)
+    if request.method=='POST':
+        question_title = request.form.get('question_title')
+        question_statement = request.form.get('question_statement')
+        option1 = request.form.get('option1')
+        option2 = request.form.get('option2')
+        option3 = request.form.get('option3')
+        option4 = request.form.get('option4')
+        correct_option = request.form.get('correct_option')
+        new_question = Question(quiz_id=quiz.id,question_title=question_title,question_statement=question_statement,option1=option1,option2=option2,
+                                option3=option3,option4=option4,correct_option=correct_option)
+        db.session.add(new_question)
+        db.session.commit()
+        return redirect(url_for("quiz_dashboard",name=name))
+    return render_template("add_question.html",quiz=quiz,name=name)
 
+############################## ########## edit question ############################################
+
+
+
+@app.route("/edit_question/<id>/<name>",methods=["GET","POST"])
+def edit_questions(id,name):
+    question = get_question(id)
+    if request.method=='POST':
+        mquestion_title = request.form.get('question_title')
+        mquestion_statement = request.form.get('question_statement')
+        moption1 = request.form.get('option1')
+        moption2 = request.form.get('option2')
+        moption3 = request.form.get('option3')
+        moption4 = request.form.get('option4')
+        mcorrect_option = request.form.get('correct_option')
+        
+        question.question_title = mquestion_title
+        question.question_statement = mquestion_statement
+        question.option1 = moption1
+        question.option2 = moption2
+        question.option3 = moption3
+        question.option4 = moption4
+        question.correct_option = mcorrect_option
+        db.session.commit()
+        return redirect(url_for("quiz_dashboard",name=name))
+    return render_template("edit_question.html",question=question,name=name)
+
+############################## ########## delete question ############################################
+
+
+@app.route("/delete_question/<id>/<name>",methods=["GET","POST"])
+def delete_question(id,name):
+    question = get_question(id)
+    db.session.delete(question)
+    db.session.commit()
+    return redirect(url_for("quiz_dashboard",name=name))
+
+############################## ########## view quiz ############################################
+
+@app.route('/view_quiz/<id>/<name>')
+def view_quiz(id,name):
+    quiz = get_quiz(id)
+    chapter = Chapter.query.filter_by(id=quiz.Chapter_id).first()
+    subject = Subject.query.filter_by(id=chapter.Subject_id).first()
+    return render_template("quiz_details.html",quiz=quiz,name=name,chapter=chapter,subject=subject)  
 
 #############################################    search #################################################
 
@@ -279,3 +342,6 @@ def  get_quiz(id):
     quiz = Quiz.query.filter_by(id=id).first() 
     return quiz
 
+def  get_question(id):
+    question = Question.query.filter_by(id=id).first()
+    return question
