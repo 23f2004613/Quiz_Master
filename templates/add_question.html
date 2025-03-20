@@ -39,7 +39,7 @@
                 </div>
               </nav>
               <!-- nav bar ends here -->
-              <h3 id="center">Add question</h3>
+              <h3 id="center">Add question|{{chap}}</h3>
               <div id="input_form" style="height: auto;">
                 <form action="/add_question/{{quiz.id}}/{{name}}" method="POST">
                     <div class="mb-3">
@@ -57,19 +57,19 @@
                     <h4 id="center">Single Option Correct</h4>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="option1" class="form-label me-2">Option 1:</label>
-                        <input type="text" class="form-control w-50"  id="option1" name="option1" >
+                        <input type="text" class="form-control w-50"  id="1" name="option1" >
                     </div>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="option2" class="form-label me-2">Option 2:</label>
-                        <input type="text" class="form-control w-50"  id="option2" name="option2" >
+                        <input type="text" class="form-control w-50"  id="2" name="option2" >
                     </div>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="option3" class="form-label me-2">Option 3:</label>
-                        <input type="text" class="form-control w-50"  id="option3" name="option3" >
+                        <input type="text" class="form-control w-50"  id="3" name="option3" >
                     </div>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="option4" class="form-label me-2">Option 4:</label>
-                        <input type="text" id="option4" name="option4" class="form-control w-50" >
+                        <input type="text" id="4" name="option4" class="form-control w-50" >
                     </div>
                     <div class="mb-3 d-flex align-items-center">
                         <label for="correct_option" class="form-label me-2">Correct Option:</label>

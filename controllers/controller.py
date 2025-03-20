@@ -1,4 +1,4 @@
-from flask import Flask,render_template,request,url_for,redirect
+from flask import Flask,render_template,request,url_for,redirect,session
 from flask import current_app as app
 from models.models import *
 from datetime import date,time,datetime,timedelta
@@ -25,7 +25,7 @@ def user_dashboard(name):
 
 @app.route('/quiz_dashboard/<name>')
 def quiz_dashboard(name):
-    # quizz=Quiz.query.join(Chapter).add_columns(Quiz.id, Chapter.id.label('chapter_id'), Chapter.name.label('chapter_name')).all()
+    # quizzes=Quiz.query.join(Chapter).add_columns(Quiz.id, Chapter.id.label('chapter_id'), Chapter.name.label('chapter_name')).all()
     quizzes = get_quizs()
     return render_template("quiz_dashboard.html",quizs=quizzes,name=name)
 
@@ -37,6 +37,10 @@ def login():
         uname= request.form.get("email")
         pwd=request.form.get("pwd")
         usr=User.query.filter_by(email=uname,password=pwd).first()
+        if usr:
+            session["user_id"] = usr.id  
+            session["username"] = usr.fullname  
+            session["role"] = usr.role  # Store role for later use
         if usr and usr.role==0:
             return redirect(url_for("admin_dashboard",name=usr.fullname))
         if usr and usr.role==1:
@@ -232,6 +236,7 @@ def delete_quiz(id,name):
 @app.route("/add_question/<id>/<name>",methods=["GET","POST"])
 def add_questions(id,name):
     quiz = get_quiz(id)
+    chapter = Chapter.query.filter_by(id =quiz.Chapter_id).first()
     if request.method=='POST':
         question_title = request.form.get('question_title')
         question_statement = request.form.get('question_statement')
@@ -245,7 +250,7 @@ def add_questions(id,name):
         db.session.add(new_question)
         db.session.commit()
         return redirect(url_for("quiz_dashboard",name=name))
-    return render_template("add_question.html",quiz=quiz,name=name)
+    return render_template("add_question.html",quiz=quiz,name=name,chap=chapter.name)
 
 ############################## ########## edit question ############################################
 
@@ -293,6 +298,105 @@ def view_quiz(id,name):
     subject = Subject.query.filter_by(id=chapter.Subject_id).first()
     return render_template("quiz_details.html",quiz=quiz,name=name,chapter=chapter,subject=subject)  
 
+
+############################## ########## start quiz ############################################
+@app.route("/quiz_exam/<id>/<name>",methods=["GET","POST"])
+def give_quiz(id,name):
+    quiz = get_quiz(id)
+    questions = Question.query.filter_by(quiz_id=quiz.id).all()
+    total_questions = len(questions)
+    if "quiz_id" not in session or session["quiz_id"]!= quiz.id:
+        session["quiz_id"] = quiz.id
+        session["current_question"] = 0
+        session["quiz_answers"] = {}
+    current_index = session["current_question"]
+    if current_index >= total_questions:
+        correct_answers = 0
+        for question in questions:
+            if str(question.id) in session["quiz_answers"] and session["quiz_answers"][str(question.id)] == str(question.correct_option):
+                correct_answers += 1
+            
+        score = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
+
+        if "user_id" in session:  # Ensure user is logged in
+            new_score = Score(
+                quiz_id=quiz.id,
+                user_id=session["user_id"],  # Get user ID from session
+                total_scored=(correct_answers/total_questions)*100,
+                time_stamp=datetime.utcnow()
+            )
+            db.session.add(new_score)
+            db.session.commit()  
+
+        return render_template(
+                "quiz_score.html",
+                quiz=quiz,
+                name=name,
+                correct_answers=correct_answers,
+                total_questions=total_questions,
+                score=round(score, 2)
+            )
+    current_question = questions[current_index]
+    if request.method == "POST":
+        selected_option = request.form.get("answer")  # Get user answer
+        if selected_option:
+            session["quiz_answers"][str(current_question.id)] = selected_option
+        if "next" in request.form:  # "Next" button clicked
+            session["current_question"] += 1  # Move to next question
+            session.modified = True
+            return redirect(url_for("give_quiz",id=quiz.id,name=name))
+        elif "submit" in request.form:
+            # Calculate score before showing results
+            correct_answers = 0
+            for question in questions:
+                if str(question.id) in session["quiz_answers"] and session["quiz_answers"][str(question.id)] == str(question.correct_option):
+                    correct_answers += 1
+            
+            score = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
+
+            if "user_id" in session:  # Ensure user is logged in
+                new_score = Score(
+                    quiz_id=quiz.id,
+                    user_id=session["user_id"],  # Get user ID from session
+                    total_scored=(correct_answers/total_questions)*100,
+                    time_stamp=datetime.utcnow()
+                )
+                db.session.add(new_score)
+                db.session.commit()
+
+            
+            return render_template(
+                "quiz_score.html",
+                quiz=quiz,
+                name=name,
+                correct_answers=correct_answers,
+                total_questions=total_questions,
+                score=round(score, 2)
+            )
+        
+    return render_template("quiz.html",question=current_question,total=total_questions,index=current_index + 1,current_question_index=current_index)
+
+
+
+@app.route("/restart_quiz/<id>/<name>")
+def restart_quiz(id, name):
+    # Clear session data related to the quiz
+    session.pop("quiz_id", None)
+    session.pop("current_question", None)
+    session.pop("quiz_answers", None)
+    
+    # Redirect to start the quiz again
+    return redirect(url_for("give_quiz", id=id, name=name))
+
+
+@app.route("/user_scores/<name>")
+def user_scores(name):
+    user_id = session["user_id"]
+    scores = Score.query.filter_by(user_id=user_id).all()
+    num_questions = {score.quiz_id: Question.query.filter_by(quiz_id=score.quiz_id).count() for score in scores}
+    return render_template("user_scores.html", name=name, scores=scores,num_questions=num_questions)
+
+
 #############################################    search #################################################
 
 @app.route("/search/<name>", methods=['GET','POST'])
@@ -311,9 +415,6 @@ def search(name):
 def search_by_subject(search_txt):
     subj = Subject.query.filter(Subject.name.ilike(f"%{search_txt}%")).all()
     return subj
-
-
-
 
 # ##########################################        support fuctions      ##################################################  
 

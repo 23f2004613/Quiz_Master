@@ -8,6 +8,7 @@ app=None
 
 def setup_app():
     app=Flask(__name__)
+    app.secret_key = "your_secret_key"  # Secret key needed for session
     app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///quiz_master.sqlite3"
     db.init_app(app)
     app.app_context().push() #direct access to other models like database
