@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Admin Dashboard</title>
+
+</head>
+<body>
+    <div id="container">
+        <h1 id="heading">Quiz Master</h1>
+<!-- nav bar strats here -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Admin Dashboard</a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/quiz_dashboard/{{name}}">Quizzes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin_users/{{name}}">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Summary</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/login">Logout</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex" method="POST" action="/search1/{{name}}">
+                        <input class="form-control me-2" type="search" placeholder="Search" name="search_txt" id="search_txt">
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </form>
+                </div>
+                <span class="ms-3">Welcome, <strong>{{name}}</strong></span>
+            </div>
+        </nav>
+        <!-- nav bar ends here -->
+
+        <!-- Admin summary panel -->
+        <div id="admin-summary-panel" class="container mt-4">
+            <h4 class="text-center text-primary">Admin Summary</h4>
+            <p><strong>Total Users:</strong> {{ total_users }}</p>
+            <p><strong>Total no of Quiz Attempted:</strong> {{ attempted_users }}</p>
+            <p><strong> Total Users Who Scored 100%:</strong> {{ full_score_users }} ({{ full_score_percent }}%)</p>
+
+            {% if chart_path %}
+            <div class="text-center">
+                <img src="/{{ chart_path }}" alt="Quiz Performance Chart" class="img-fluid">
+            </div>
+            {% else %}
+            <p class="text-danger text-center">No quiz data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+</body>
+</html>

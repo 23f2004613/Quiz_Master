@@ -21,13 +21,16 @@
                             <a class="nav-link active" href="/quiz_dashboard/{{name}}">Quizzes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Summary</a>
+                            <a class="nav-link active" href="/admin_users/{{name}}">Users</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin_summary/{{name}}">Summary</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-danger" href="/login">Logout</a>
                         </li>
                     </ul>
-                    <form class="d-flex" method="POST" action="/search/{{name}}">
+                    <form class="d-flex" method="POST" action="/search1/{{name}}">
                         <input class="form-control me-2" type="search" placeholder="Search" name="search_txt" id="search_txt">
                         <button class="btn btn-outline-primary" type="submit">Search</button>
                     </form>

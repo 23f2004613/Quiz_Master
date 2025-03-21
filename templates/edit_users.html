@@ -28,7 +28,7 @@
                             <a class="nav-link active" href="/admin/{{ name }}">Subjects</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="/admin_users/{{name}}">Users</a>
+                            <a class="nav-link active" href="#">Users</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="/admin_summary/{{name}}">Summary</a>
@@ -50,40 +50,34 @@
         <!-- edit_question panel starts here -->
         <div id="edit_question-panel" style="margin: auto;margin-top: 50px; width: 500px;">
             
-            <h3 class="text-center text-primary">Edit Question</h3>
+            <h3 class="text-center text-primary">Edit Users</h3>
             <!-- card starts here -->
             <div class="card">
-                <form action="/edit_question/{{question.id}}/{{name}}" method="POST">
+                <form action="/view_user/{{user.id}}/{{name}}" method="POST">
                     <div class="mb-3">
-                        <label for="question_title" class="form-label">Question Title</label>
-                        <input type="text" class="form-control" id="question_title" name="question_title" value="{{question.question_title}}" required>
+                        <label for="email" class="form-label"><b>Email Address</b></label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="iitm@ds.study.iitm.ac.in" value="{{user.email}}" readonly>
                     </div>
                     <div class="mb-3">
-                        <label for="question_statement" class="form-label">Question Statement</label>
-                        <textarea class="form-control" id="question_statement" name="question_statement" rows="2" required>{{question.question_statement}}</textarea>
+                        <label for="fullname" class="form-label"><b>Full Name</b></label>
+                        <input type="text" class="form-control" id="fullname" name="fullname" value="{{user.fullname}}" readonly>
                     </div>
-                    <h4 class="text-center text-secondary">Single Option Correct</h4>
-                    
-                    {% for i in range(1, 5) %}
-                    <div class="mb-3 d-flex align-items-center">
-                        <label for="option{{i}}" class="form-label me-2">Option {{i}}:</label>
-                        <input type="text" class="form-control w-75" id="option{{i}}" name="option{{i}}" value="{{question['option' ~ i]}}" required>
+                    <div class="mb-3">
+                        <label for="quali" class="form-label"><b>Qualification</b></label>
+                        <input type="text" class="form-control" id="quali" name="qual" value="{{user.Qualification}}" readonly>
                     </div>
-                    {% endfor %}
-    
-                    <div class="mb-3 d-flex align-items-center">
-                        <label for="correct_option" class="form-label me-2">Correct Option:</label>
-                        <input type="number" name="correct_option" id="correct_option" class="form-control w-25" min="1" max="4" value="{{question.correct_option}}" required>
+                    <div class="mb-3">
+                        <label for="dob" class="form-label"><b>Date of Birth</b></label>
+                        <input type="date" class="form-control" id="dob" name="dob" value="{{user.DOB}}" readonly>
                     </div>
-    
                     <div class="mb-3 text-center">
-                        <button type="submit" class="btn btn-primary mx-2">Submit</button>
-                        <a href="/quiz_dashboard/{{name}}" class="btn btn-secondary mx-2">Cancel</a>
+                        <a href="/delete_user/{{user.id}}/{{name}}" class="btn btn-danger mx-2">Delete</a>
+                        <a href="/admin_users/{{name}}" class="btn btn-secondary mx-2">Cancel</a>
                     </div>
-    
-                    {% if msg %}
-                        <div class="alert alert-danger text-center">{{msg}}</div>
-                    {% endif %}
+                    <div class="text-center" style="color: red;">
+                        {{ msg }}
+                    </div>
+                    
                 </form>
             </div>
             <!-- card ends here -->
