@@ -322,7 +322,7 @@ def give_quiz(id,name):
             new_score = Score(
                 quiz_id=quiz.id,
                 user_id=session["user_id"],  # Get user ID from session
-                total_scored=(correct_answers/total_questions)*100,
+                total_scored=round(score, 2),
                 time_stamp=datetime.utcnow()
             )
             db.session.add(new_score)
@@ -358,7 +358,7 @@ def give_quiz(id,name):
                 new_score = Score(
                     quiz_id=quiz.id,
                     user_id=session["user_id"],  # Get user ID from session
-                    total_scored=(correct_answers/total_questions)*100,
+                    total_scored=round(score, 2),
                     time_stamp=datetime.utcnow()
                 )
                 db.session.add(new_score)

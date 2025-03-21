@@ -3,87 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>user dashboard</title>
+    <style>
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
     <div id="container">
         <h1 id="heading">Quiz Master</h1>
-        <div id="panel">
-            <h3 id="center">User Dashboard</h3>
-            <!-- nav var started here -->
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <div class="container-fluid">
-                  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                      <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link active" href="#">Scores</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link active" href="#">Summary</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link active" href="/login">Logout</a>
-                      </li>
+        <!-- nav bar started here -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white" style="box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px 20px;">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#"><b>Quiz details</b></a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/user_scores/{{ name }}">Scores</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Summary</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/login">Logout</a>
+                        </li>
                     </ul>
-                    <form class="d-flex">
-                      <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                      <button class="btn btn-outline-success" type="submit">Search</button>
+                    <form class="d-flex" method="POST" action="/search/{{name}}">
+                        <input class="form-control me-2" type="search" placeholder="Search" name="search_txt" id="search_txt">
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
                     </form>
-                  </div>
-                  <span class="ms-3">Welcome {{name}}</span>
                 </div>
-              </nav>
-              <!-- nav bar ends here -->
-              <h3 id="center"> Quiz Details</h3>
-              <div id="input_form" style="min-height: 400px;width: 400px;">
-                <form action="/view_quiz/{{quiz.id}}/{{name}}" method="POST">
-                    <div class="row mb-2">
-                        <label class="col-5 form-label"><b>ID:</b></label>
-                        <div class="col-7">
-                            <input type="text" class="form-control" value="{{quiz.id}}" readonly>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <label class="col-5 form-label"><b>Subject:</b></label>
-                        <div class="col-7">
-                            <input type="text" class="form-control highlight" value="{{subject.name}}" readonly>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <label class="col-5 form-label"><b>Chapter:</b></label>
-                        <div class="col-7">
-                            <input type="text" class="form-control highlight" value="{{chapter.name}}" readonly>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <label class="col-5 form-label"><b>Number of Questions:</b></label>
-                        <div class="col-7">
-                            <input type="text" class="form-control" value="{{quiz.questions | length}}" readonly>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <label class="col-5 form-label"><b>Scheduled Date:</b></label>
-                        <div class="col-7">
-                            <input type="date" class="form-control"  value="{{quiz.date_of_quiz}}"  readonly>
-                        </div>
-                    </div>
-                    <div class="row mb-2">
-                        <label class="col-5 form-label"><b>Duration (hh:mm):</b></label>
-                        <div class="col-7">
-                            <input type="time" class="form-control" value="{{quiz.time_duration}}" readonly>
-                        </div>
-                    </div>
-                    <div id="center">
-                        <a href="/user/{{name}}" class="btn btn-primary">Close</a>
-                    </div>
-                </form>
+                <span class="ms-3">Welcome, <strong>{{name}}</strong></span>
             </div>
+        </nav>
+
+        <!-- nav bar ended here -->
+         <!-- quiz_ detail panel starts here -->
+        <div id="quiz_detail-panel" style="margin: auto;margin-top: 50px; width: 500px;">
+            <!-- card starts here -->
+            <div class="card">
+                <h3 class="text-center text-primary fw-bold">Quiz Details</h3>
+            <form action="/view_quiz/{{quiz.id}}/{{name}}" method="POST">
+                <div class="mb-3">
+                    <label class="form-label"><b>Quiz ID:</b></label>
+                    <input type="text" class="form-control" value="{{quiz.id}}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><b>Subject:</b></label>
+                    <input type="text" class="form-control" value="{{subject.name}}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><b>Chapter:</b></label>
+                    <input type="text" class="form-control" value="{{chapter.name}}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><b>Number of Questions:</b></label>
+                    <input type="text" class="form-control" value="{{quiz.questions | length}}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><b>Scheduled Date:</b></label>
+                    <input type="date" class="form-control" value="{{quiz.date_of_quiz}}" readonly>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><b>Duration (hh:mm):</b></label>
+                    <input type="time" class="form-control" value="{{quiz.time_duration}}" readonly>
+                </div>
+                <div class="d-grid">
+                    <a href="/user/{{name}}" class="btn btn-primary btn-custom">Close</a>
+                </div>
+            </form>
+            </div>
+            <!-- card ends here -->
         </div>
+        <!-- quiz_ detail panel ends here -->
     </div>
 </body>
 </html>
