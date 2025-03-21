@@ -517,6 +517,28 @@ def search_by_quiz(search_txt):
     return quiz
 
 
+@app.route("/search3/<name>", methods=['GET','POST'])
+def search3(name):
+    if request.method=="POST":
+        search_txt=request.form.get("search_txt")
+        by_email= search_by_email(search_txt)
+        by_fullname = search_by_fullname(search_txt)
+        if by_email:
+            return render_template("admin_users.html",name=name,users=by_email)
+        elif by_fullname:
+            return render_template("admin_users.html",name=name,users=by_fullname)
+    return redirect(url_for("admin_user",name=name))
+
+def search_by_email(search_txt):
+    user = User.query.filter(User.email.ilike(f"%{search_txt}%")).all()
+    return user
+
+
+def search_by_fullname(search_txt):
+    user = User.query.filter(User.fullname.ilike(f"%{search_txt}%")).all()
+    return user
+
+
 # ##########################################        support fuctions      ##################################################  
 
 # for getting all subject info for the admin dashboard
