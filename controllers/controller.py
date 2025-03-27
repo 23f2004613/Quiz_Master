@@ -8,28 +8,33 @@ import matplotlib.pyplot as plt
 
 
 
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
 ############################################## common fuctions for admin and user ####################################################
 
 @app.route('/admin/<name>')
 def admin_dashboard(name):
-    subjects = get_subjects()
-    return render_template("admin_dashboard.html",subjects=subjects,name=name)
+    subjects = Subject.query.all()  # Get all subjects
+    return render_template("admin_dashboard.html", subjects=subjects, name=name)
 
 @app.route('/user/<name>')
 def user_dashboard(name):
     quizzes = get_quizs()
-    return render_template("user_dashboard.html",quizs=quizzes,name=name)
+    today = date.today()
+    equiz = [quiz for quiz in quizzes if quiz.date_of_quiz <= today]  # Expired quizzes
+    uquiz = [quiz for quiz in quizzes if quiz.date_of_quiz > today] 
+    return render_template("user_dashboard.html",uquizs=uquiz,equizs=equiz,name=name)
 
 
 @app.route('/quiz_dashboard/<name>')
 def quiz_dashboard(name):
     quizzes = get_quizs()
     return render_template("quiz_dashboard.html",quizs=quizzes,name=name)
+
+##################  base url #################
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
 
 # #################################################### login ########################################################
 
@@ -42,13 +47,13 @@ def login():
         if usr:
             session["user_id"] = usr.id  
             session["username"] = usr.fullname  
-            session["role"] = usr.role  # Store role for later use
+            # session["role"] = usr.role
         if usr and usr.role==0:
             return redirect(url_for("admin_dashboard",name=usr.fullname))
         if usr and usr.role==1:
             return redirect(url_for("user_dashboard",name=usr.fullname))
         return render_template("login.html",msg="wrong credentials!!")
-    return render_template("login.html")
+    return render_template("login.html",msg="")
 
 
 # ################################################### signup #############################################################
@@ -68,7 +73,6 @@ def signup():
         date_obj = date(year, month, day)
         if date_obj >= min_dob:
             return render_template('signup.html',msg="age should be greatr then 18 years")
-        # **Check if any field is empty**
         usr=User.query.filter_by(email=uname).first()
         if usr:
             return render_template('signup.html',msg="user alredy existed")
@@ -76,7 +80,7 @@ def signup():
         db.session.add(new_usr)
         db.session.commit()
         return render_template('login.html',msg="Registration done successfully")
-    return render_template("signup.html")
+    return render_template("signup.html",msg="")
 
 
 
@@ -90,11 +94,14 @@ def add_subject(name):
         sub_description = request.form.get("description")
         if not sub_name:
             return render_template("add_subject.html",name=name,msg="Subject name cant be empty")
+        subj = Subject.query.filter_by(name=sub_name).first()
+        if subj:
+            return render_template("add_subject.html",name=name,msg="Subject name already exists")
         new_subj = Subject(name=sub_name,description=sub_description)
         db.session.add(new_subj)
         db.session.commit()
         return redirect(url_for("admin_dashboard",name=name))
-    return render_template("add_subject.html",name=name)
+    return render_template("add_subject.html",name=name,msg="")
 
 
 # ###########################################  editing of subject  #####################################################
@@ -110,7 +117,7 @@ def edit_subject(id,name):
         subj.description = new_sub_description
         db.session.commit()
         return redirect(url_for("admin_dashboard",name=name))
-    return render_template("edit_subject.html",subject=subj,name=name)
+    return render_template("edit_subject.html",subject=subj,name=name,msg="")
 
 # ####################################       delete of subject   ################################################
 
@@ -129,16 +136,16 @@ def add_chapter(id,name):
     if request.method=="POST":
         chap_name=request.form.get("name")
         chap_description = request.form.get("description")
+        if not chap_name:
+            return render_template("add_chapter.html",subject=subject,name=name,msg="chapter name cannot be empty")
         chapt = Chapter.query.filter_by(name=chap_name).first()
         if chapt:
             return render_template("add_chapter.html",subject=subject,name=name,msg="chapter name already exist")
-        elif not chap_name:
-            return render_template("add_chapter.html",subject=subject,name=name,msg="chapter name cant be empty")
         new_chapter = Chapter(name=chap_name,description=chap_description,Subject_id=subject.id)
         db.session.add(new_chapter)
         db.session.commit()
         return redirect(url_for("admin_dashboard",name=name))
-    return render_template("add_chapter.html",subject=subject,name=name)
+    return render_template("add_chapter.html",subject=subject,name=name,msg="")
 
 
 ##################################         edit of chApter #################################################
@@ -180,19 +187,19 @@ def add_quiz(id,name):
         date_of_quiz = request.form.get("date_of_quiz")
         time_duration = request.form.get("time_duration")
         remarks = request.form.get("remarks")
-        if not date_of_quiz or not time_duration :
+        if not qname or not date_of_quiz or not time_duration :
             return render_template("add_quiz.html",chapter=chap,name=name,msg="Fill all inputs")
         year, month, day = map(int, date_of_quiz.split('-'))
         date_obj = date(year, month, day)
         hour, minute = map(int, time_duration.split(':'))
         time_obj = time(hour, minute)
         if date_obj <= today:
-            return render_template("add_quiz.html",name=name,chapter=chap,msg="increase date")
+            return render_template("add_quiz.html",name=name,chapter=chap,msg="Select upcoming dates")
         new_quiz=Quiz(name=qname,date_of_quiz=date_obj,time_duration=time_obj,remarks=remarks,Chapter_id=id)
         db.session.add(new_quiz)
         db.session.commit()
         return redirect(url_for("admin_dashboard",name=name))
-    return render_template("add_quiz.html",name=name,chapter=chap)
+    return render_template("add_quiz.html",name=name,chapter=chap,msg="")
 
 
 ###########################################    edit quiz #############################################
@@ -207,7 +214,7 @@ def edit_quiz(id,name):
         mod_date_of_quiz = request.form.get("date_of_quiz")
         mod_time_duration = request.form.get("time_duration")
         mod_remarks = request.form.get("remarks")
-        if not mod_date_of_quiz or not mod_time_duration :
+        if not mod_name or not mod_date_of_quiz or not mod_time_duration :
             return render_template("edit_quiz.html",quiz=quiz,name=name,msg="Fill all inputs")
         year, month, day = map(int, mod_date_of_quiz.split('-'))
         date_obj = date(year, month, day)
@@ -255,7 +262,7 @@ def add_questions(id,name):
         db.session.add(new_question)
         db.session.commit()
         return redirect(url_for("quiz_dashboard",name=name))
-    return render_template("add_question.html",quiz=quiz,name=name,chap=chapter.name)
+    return render_template("add_question.html",quiz=quiz,name=name,chap_name=chapter.name)
 
 ############################## ########## edit question ############################################
 
@@ -272,7 +279,6 @@ def edit_questions(id,name):
         moption3 = request.form.get('option3')
         moption4 = request.form.get('option4')
         mcorrect_option = request.form.get('correct_option')
-        
         question.question_title = mquestion_title
         question.question_statement = mquestion_statement
         question.option1 = moption1
@@ -294,28 +300,28 @@ def delete_question(id,name):
     db.session.commit()
     return redirect(url_for("quiz_dashboard",name=name))
 
-############################## ########## view quiz ############################################
+############################## ########## view quiz for user############################################
 
 @app.route('/view_quiz/<id>/<name>')
 def view_quiz(id,name):
     quiz = get_quiz(id)
     chapter = Chapter.query.filter_by(id=quiz.Chapter_id).first()
     subject = Subject.query.filter_by(id=chapter.Subject_id).first()
-    return render_template("quiz_details.html",quiz=quiz,name=name,chapter=chapter,subject=subject)  
+    return render_template("view_quiz.html",quiz=quiz,name=name,chapter=chapter,subject=subject)  
 
 
 ############################## ########## start quiz ############################################
 
 @app.route("/quiz_exam/<id>/<name>", methods=["GET", "POST"])
 def give_quiz(id, name):
-    quiz = Quiz.query.get_or_404(id)  # Fetch quiz details
-    questions = Question.query.filter_by(quiz_id=quiz.id).all()  # Get all questions
+    quiz = Quiz.query.filter_by(id=id).first()
+    questions = Question.query.filter_by(quiz_id=quiz.id).all() 
+    ti_me = str(quiz.time_duration)
+    ti_me = ti_me[:-3]
     total_questions = len(questions)
-    
     if request.method == "POST":
-        user_answers = request.form.to_dict(flat=True)  # Get all submitted answers
+        user_answers = request.form.to_dict(flat=True)
         correct_answers = 0
-        
         for question in questions:
             selected_option = user_answers.get(str(question.id))
 
@@ -323,16 +329,17 @@ def give_quiz(id, name):
                 correct_answers += 1
         
         score = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
-
-        if "user_id" in session:  # Ensure user is logged in
-            new_score = Score(
-                quiz_id=quiz.id,
-                user_id=session["user_id"],
-                total_scored=round(score, 2),
-                time_stamp=datetime.utcnow()
-            )
-            db.session.add(new_score)
-            db.session.commit()
+        today = date.today()
+        if quiz.date_of_quiz > today:
+            if "user_id" in session:  # Ensure user is logged in
+                new_score = Score(
+                    quiz_id=quiz.id,
+                    user_id=session["user_id"],
+                    total_scored=round(score, 2),
+                    time_stamp=datetime.utcnow()
+                )
+                db.session.add(new_score)
+                db.session.commit()
         
         return render_template(
             "quiz_score.html",
@@ -343,8 +350,9 @@ def give_quiz(id, name):
             score=round(score, 2)
         )
     
-    return render_template("quiz.html", quiz=quiz, name=name, questions=questions, total=total_questions)
+    return render_template("quiz.html", quiz=quiz, name=name, questions=questions, total=total_questions,ti_me=ti_me)
 
+########################  restart quiz ###############################################
 
 @app.route("/restart_quiz/<id>/<name>")
 def restart_quiz(id, name):
@@ -352,45 +360,63 @@ def restart_quiz(id, name):
     return redirect(url_for("give_quiz", id=id, name=name))
 
 
+#######################  user scores #####################
+
 @app.route("/user_scores/<name>")
 def user_scores(name):
     user_id = session["user_id"]
     scores = Score.query.filter_by(user_id=user_id).all()
     num_questions = {}
+    quiz_names = {}
     for score in scores:
-        quiz_id = score.quiz_id  # Get quiz ID
-        question_count = Question.query.filter_by(quiz_id=quiz_id).count()  # Count questions for that quiz
-        num_questions[quiz_id] = question_count  # Store in dictionary
+        quiz_id = score.quiz_id  
+        quiz_names[quiz_id] = score.quiz.name  # Get quiz name
+        question_count = Question.query.filter_by(quiz_id=quiz_id).count()  
+        num_questions[quiz_id] = question_count  
 
-    return render_template("user_scores.html", name=name, scores=scores,num_questions=num_questions)
+    return render_template(
+        "user_scores.html",
+        name=name,
+        scores=scores,
+        num_questions=num_questions,
+        quiz_names=quiz_names  # Pass quiz names to template
+    )
 
+#################  user summery #######################################
 
 @app.route("/user_summary/<name>")
 def user_summary(name):
-    if "user_id" not in session:
-        return redirect(url_for("login"))  # Redirect to login if session is empty
-    
-    user_id = session["user_id"]  # Get user ID from session
-
-    # Fetch all quiz attempts by the user
+    user_id = session["user_id"] 
     user_scores = Score.query.filter_by(user_id=user_id).all()
-
-    # Count total quizzes attempted
     total_quizzes_attempted = len(user_scores)
 
-    # Count how many times the user got a full score (assuming full score is 100)
-    full_score_quizzes = sum(1 for score in user_scores if score.total_scored == 100)
+    full_score_quizzes = 0
+    for score in user_scores:
+        if score.total_scored == 100:
+            full_score_quizzes += 1
 
-    # Get unique quiz IDs attempted by the user
-    unique_quiz_ids = list(set(score.quiz_id for score in user_scores))
+    zero_score_quizzes = 0
+    for score in user_scores:
+        if score.total_scored == 0:
+            zero_score_quizzes += 1
+
+    unique_quiz_ids = set()
+    for score in user_scores:
+        unique_quiz_ids.add(score.quiz_id) 
+
+    unique_quiz_ids = list(unique_quiz_ids)  
 
     # Calculate average scores for each quiz
     quiz_names = []
     avg_scores = []
     for quiz_id in unique_quiz_ids:
         quiz = Quiz.query.get(quiz_id)  # Fetch quiz details
-        quiz_name = quiz.name if quiz else f"Quiz {quiz_id}"
-        scores = [score.total_scored for score in user_scores if score.quiz_id == quiz_id]
+        quiz_name = quiz.name
+        scores = []  # Initialize an empty list
+        for score in user_scores:
+            if score.quiz_id == quiz_id:
+                scores.append(score.total_scored)
+
         avg_score = sum(scores) / len(scores) if scores else 0
 
         quiz_names.append(quiz_name)
@@ -405,24 +431,29 @@ def user_summary(name):
     plt.ylim(0, 100)  # 🔹 Fixing y-axis from 0 to 100%
     plt.grid(axis="y", linestyle="--", alpha=0.7)
 
-    # Save the chart to static/images/
+    for i, v in enumerate(avg_scores):
+        plt.text(i, v - 5, f"{v}%", ha="center", color="white", fontweight="bold")
+
     chart_path = f"static/images/user_{user_id}_chart.png"
     plt.savefig(chart_path, format="png", bbox_inches="tight")
     plt.close()
 
-    # Pass summary stats and chart path to the template
     return render_template(
         "user_summary.html",
         name=name,
         total_quizzes=total_quizzes_attempted,
         full_scores=full_score_quizzes,
+        zero_scores=zero_score_quizzes,
         chart_path=chart_path
     )
 
 
+###########################    admin summery #################################
+
+
 @app.route('/admin_summary/<name>')
 def admin_summary(name):
-    total_users = User.query.count()
+    total_users = User.query.filter_by(role=1).count()
     attempted_users = Score.query.distinct(Score.user_id).count()
     full_score_users = Score.query.filter(Score.total_scored == 100).distinct(Score.user_id).count()
 
@@ -450,7 +481,7 @@ def admin_summary(name):
 
     # Add percentage labels inside bars
     for i, v in enumerate(avg_scores):
-        plt.text(i, v - 5, f"{v}%", ha="center", va="bottom", color="white", fontweight="bold")
+        plt.text(i, v - 5, f"{v}%", ha="center", color="white", fontweight="bold")
 
     # Save the chart
     chart_path = "static/images/admin_summary_chart.png"
@@ -466,10 +497,15 @@ def admin_summary(name):
 
 
 
+#####################  view users #####################################
+
 @app.route('/view_user/<id>/<name>',methods=["GET","POST"])
 def edit_user(name,id):
     user = User.query.filter_by(id=id).first()
     return render_template("edit_users.html",name=name,user=user)
+
+#####################  delete users #####################################
+
 
 @app.route('/delete_user/<id>/<name>',methods=["GET","POST"])
 def delete_user(id,name):
@@ -477,6 +513,8 @@ def delete_user(id,name):
     db.session.delete(user)
     db.session.commit()
     return redirect(url_for("admin_user",name=name))
+
+#####################  admin users #####################################
 
 
 @app.route('/admin_users/<name>')
@@ -487,6 +525,9 @@ def admin_user(name):
 
 
 #############################################    search #################################################
+
+
+#############################################    admin dashboard search #################################################
 
 @app.route("/search1/<name>", methods=['GET','POST'])
 def search1(name):
@@ -502,6 +543,7 @@ def search_by_subject(search_txt):
     subj = Subject.query.filter(Subject.name.ilike(f"%{search_txt}%")).all()
     return subj
 
+#############################################    quiz dashboard search #################################################
 
 @app.route("/search2/<name>", methods=['GET','POST'])
 def search2(name):
@@ -516,6 +558,7 @@ def search_by_quiz(search_txt):
     quiz = Quiz.query.filter(Quiz.name.ilike(f"%{search_txt}%")).all()
     return quiz
 
+#############################################    admin users search #################################################
 
 @app.route("/search3/<name>", methods=['GET','POST'])
 def search3(name):
@@ -529,19 +572,35 @@ def search3(name):
             return render_template("admin_users.html",name=name,users=by_fullname)
     return redirect(url_for("admin_user",name=name))
 
+
 def search_by_email(search_txt):
-    user = User.query.filter(User.email.ilike(f"%{search_txt}%")).all()
+    user = User.query.filter(User.email.ilike(f"%{search_txt}%"),User.role == 1).all()
     return user
 
 
 def search_by_fullname(search_txt):
-    user = User.query.filter(User.fullname.ilike(f"%{search_txt}%")).all()
+    user = User.query.filter(User.fullname.ilike(f"%{search_txt}%"),User.role == 1).all()
     return user
+
+
+#############################################    user dashboard search #################################################
+
+@app.route("/search4/<name>", methods=['GET','POST'])
+def search4(name):
+    if request.method=="POST":
+        search_txt=request.form.get("search_txt")
+        by_quiz = search_by_quiz(search_txt)
+        if by_quiz:
+            today = date.today()
+            equiz = [quiz for quiz in by_quiz if quiz.date_of_quiz <= today]  # Expired quizzes
+            uquiz = [quiz for quiz in by_quiz if quiz.date_of_quiz > today] 
+            return render_template("user_dashboard.html",name=name,uquizs=uquiz,equizs=equiz)
+    return redirect(url_for("user_dashboard",name=name))
 
 
 # ##########################################        support fuctions      ##################################################  
 
-# for getting all subject info for the admin dashboard
+
 
 def get_subjects():
     subjects = Subject.query.all()

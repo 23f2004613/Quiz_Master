@@ -9,19 +9,20 @@
 
 </head>
 <body>
+    <!-- container starts here -->
     <div id="container">
         <h1 id="heading">Quiz Master</h1>
 <!-- nav bar strats here -->
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Admin Dashboard</a>
+                <a class="navbar-brand">Admin Dashboard</a>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link active" href="/quiz_dashboard/{{name}}">Quizzes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Users</a>
+                            <a class="nav-link active" href="/admin/{{ name }}">Subjects</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="/admin_summary/{{name}}">Summary</a>
@@ -77,5 +78,6 @@
         </div>
         <!-- user panel ends here -->
     </div>
+    <!-- container ends here -->
 </body>
 </html>

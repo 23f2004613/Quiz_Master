@@ -8,34 +8,32 @@
     <title>Login</title>
 </head>
 <body>
-
     <!-- container starts here -->
-    <div id="login-container">
+    <div id="container" >
         <h2 class="text-center text-primary">Quiz Master</h2>
         <!-- panel starts here -->
         <div id="login-panel">
             <h3 class="text-center">Login Here</h3>
-            
             <form action="/login" method="POST">
                 <div class="mb-3">
                     <label for="email"  class="form-label" ><b>Email Address</b></label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="iitm@ds.study.iitm.ac.in" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="iitm@ds.study.iitm.ac.in">
                 </div>
                 <div class="mb-3">
                     <label for="pwd"  class="form-label" ><b>Password</b></label>
-                    <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Enter your password" required>
+                    <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Enter your password">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
                 <p id="link">
                     New user? <a href="/signup">Sign up here</a>
                 </p>
-                <div class=" text-center" style="color:  red;">
+                <div class=" text-center" style="color: red;">
                     {{ msg }}
                 </div>
             </form>
         </div>
-        <!-- panel starts here -->
+        <!-- panel ends here -->
     </div>
-    <!-- container starts here -->
+    <!-- container ends here -->
 </body>
 </html>
