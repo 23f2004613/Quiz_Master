@@ -157,7 +157,7 @@ def edit_chapter(id,name):
         new_chap_name = request.form.get("name")
         new_chap_description = request.form.get("description")
         if not new_chap_name:
-            return render_template("edit_chapter.html",chapter=chap,name=name,msg="subject name cant be empty")
+            return render_template("edit_chapter.html",chapter=chap,name=name,msg="Chapter name cant be empty")
         chap.name = new_chap_name
         chap.description = new_chap_description
         db.session.commit()
